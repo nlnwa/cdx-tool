@@ -29,27 +29,31 @@ import static org.junit.Assert.*;
  */
 public class IncrementalCDXMergerTest {
 
+    private static final File MERGED_CDX_FILE = new File("target/test-classes/index.cdx");
+    private static final File INPUT_CDX_DIR = new File("target/test-classes/mergerdata");
+
     public IncrementalCDXMergerTest() {
     }
 
     @Test
     public void testSplitFileArray() {
-        IncrementalCDXMerger cdxMerger = new IncrementalCDXMerger(new File("target/test-classes/mergerdata"), null, 2);
-        File[][] splittedFiles = cdxMerger.splitFileArray(cdxMerger.findFiles());
+        IncrementalCDXMerger cdxMerger = new IncrementalCDXMerger(INPUT_CDX_DIR, MERGED_CDX_FILE, 2);
+        File[][] splittedFiles = cdxMerger.
+                splitFileArray(cdxMerger.findFiles());
         assertEquals(3, splittedFiles.length);
         assertEquals(1, splittedFiles[splittedFiles.length - 1].length);
 
-        cdxMerger = new IncrementalCDXMerger(new File("target/test-classes/mergerdata"), null, 3);
+        cdxMerger = new IncrementalCDXMerger(INPUT_CDX_DIR, MERGED_CDX_FILE, 3);
         splittedFiles = cdxMerger.splitFileArray(cdxMerger.findFiles());
         assertEquals(2, splittedFiles.length);
         assertEquals(2, splittedFiles[splittedFiles.length - 1].length);
 
-        cdxMerger = new IncrementalCDXMerger(new File("target/test-classes/mergerdata"), null, 4);
+        cdxMerger = new IncrementalCDXMerger(INPUT_CDX_DIR, MERGED_CDX_FILE, 4);
         splittedFiles = cdxMerger.splitFileArray(cdxMerger.findFiles());
         assertEquals(2, splittedFiles.length);
         assertEquals(1, splittedFiles[splittedFiles.length - 1].length);
 
-        cdxMerger = new IncrementalCDXMerger(new File("target/test-classes/mergerdata"), null, 5);
+        cdxMerger = new IncrementalCDXMerger(INPUT_CDX_DIR, MERGED_CDX_FILE, 5);
         splittedFiles = cdxMerger.splitFileArray(cdxMerger.findFiles());
         assertEquals(1, splittedFiles.length);
         assertEquals(5, splittedFiles[splittedFiles.length - 1].length);
@@ -58,13 +62,12 @@ public class IncrementalCDXMergerTest {
     @Test
     public void testExecute() throws IOException {
         String expectedResult = "a\nb\nc\nh\nj\nk\nl\no\nr\nx\ny\nz\nå\næ\n";
-        File resultFile = new File("target/test-classes/mergerdata/mergeResult.res");
         StringBuilder result = new StringBuilder();
 
-        IncrementalCDXMerger cdxMerger = new IncrementalCDXMerger(new File("target/test-classes/mergerdata"), resultFile, 2);
+        IncrementalCDXMerger cdxMerger = new IncrementalCDXMerger(INPUT_CDX_DIR, MERGED_CDX_FILE, 2);
         cdxMerger.execute();
 
-        BufferedReader in = new BufferedReader(new FileReader(resultFile));
+        BufferedReader in = new BufferedReader(new FileReader(MERGED_CDX_FILE));
         String line = in.readLine();
         while (line != null) {
             result.append(line).append("\n");
@@ -74,4 +77,5 @@ public class IncrementalCDXMergerTest {
 
         assertEquals(expectedResult, result.toString());
     }
+
 }

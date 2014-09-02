@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
  * @author johnh
  */
 public class SourceDirectoriesTest {
+    private static final File RESOURCE_LOCATION_FILE = new File("target/test-classes/path-index.txt");
 
     File dbDir = new File("target/testdb");
 
@@ -54,24 +55,25 @@ public class SourceDirectoriesTest {
     @Test
     public void testWalk() throws InterruptedException, IOException {
         System.out.println("walk");
-        SourceDirectories copyFiles = new SourceDirectories();
+        SourceDirectories sourceDirs = new SourceDirectories();
 
         boolean recursive = true;
 
-        copyFiles.addSourceDirectory(new SourceDirectory(new File("src/test/resources"), recursive));
-        copyFiles.addSourceDirectory(new SourceDirectory(dbDir, recursive));
+        sourceDirs.addSourceDirectory(new SourceDirectory(new File("src/test/resources"), recursive));
+        sourceDirs.addSourceDirectory(new SourceDirectory(dbDir, recursive));
 
         Config config = new Config();
         config.setMergedIndexFile(new File(dbDir, "index.cdx"));
+        config.setResourceIndexFile(RESOURCE_LOCATION_FILE);
         config.setOutputDirectory(outDir);
 
-        CdxGeneratorVisitor copyjob = new CdxGeneratorVisitor(config);
+        CdxGeneratorVisitor cdxJob = new CdxGeneratorVisitor(config);
 
-        copyFiles.walk(copyjob);
-        copyjob.postProcess();
+        sourceDirs.walk(cdxJob);
+        cdxJob.postProcess();
 
-        assertEquals(3, copyjob.getFileCount());
-        assertEquals(352519152, copyjob.getTotalSize());
+        assertEquals(3, cdxJob.getFileCount());
+        assertEquals(352519152, cdxJob.getTotalSize());
     }
 
     private class FileWriter implements Runnable {
