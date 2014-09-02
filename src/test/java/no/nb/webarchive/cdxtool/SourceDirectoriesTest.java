@@ -73,7 +73,7 @@ public class SourceDirectoriesTest {
         cdxJob.postProcess();
 
         assertEquals(3, cdxJob.getFileCount());
-        assertEquals(352519152, cdxJob.getTotalSize());
+        assertEquals(3145191, cdxJob.getTotalSize());
     }
 
     private class FileWriter implements Runnable {
