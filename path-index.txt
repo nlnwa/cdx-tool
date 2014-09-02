@@ -1,0 +1,3 @@
+growing.arc	/home/johnh/java_projects/openwayback/cdx-tool/target/testdb/growing.arc
+test1.arc	/home/johnh/java_projects/openwayback/cdx-tool/src/test/resources/test1.arc
+test2.arc.gz	/home/johnh/java_projects/openwayback/cdx-tool/src/test/resources/test2.arc.gz
