@@ -28,34 +28,46 @@ import java.util.logging.Logger;
  * @author John Erik Halse
  */
 public class Scheduler {
+
     private static final Logger log = Logger.getLogger(Scheduler.class.getName());
-    
-    private final ScheduledExecutorService executorService;
-    
+
+    private ScheduledExecutorService executorService;
+
     private final SourceDirectories sourceDirectories;
-    
+
     private final FileVisitor fileVisitor;
 
     public Scheduler(SourceDirectories sourceDirectories, FileVisitor fileVisitor) {
         this.sourceDirectories = sourceDirectories;
         this.fileVisitor = fileVisitor;
-        executorService = Executors.newSingleThreadScheduledExecutor();
     }
-    
-    public void start(long period, TimeUnit timeUnit) throws InterruptedException, ExecutionException {
+
+    public void start(long period, TimeUnit timeUnit, boolean returnImmediately) {
+        executorService = Executors.newSingleThreadScheduledExecutor();
         ScheduledFuture future = executorService.scheduleAtFixedRate(new Worker(), 0, period, timeUnit);
-        future.get();
+        if (!returnImmediately) {
+            try {
+                future.get();
+            } catch (InterruptedException ex) {
+                stop();
+                throw new RuntimeException(ex);
+            } catch (ExecutionException ex) {
+                stop();
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     public void runOnce() {
         new Worker().run();
-        executorService.shutdownNow();
     }
-    
+
     public void stop() {
-        executorService.shutdownNow();
+        if (executorService != null) {
+            executorService.shutdownNow();
+        }
     }
-    
+
     private class Worker implements Runnable {
 
         @Override
@@ -71,6 +83,6 @@ public class Scheduler {
             log.info("Finished job.");
             log.info(fileVisitor.toString());
         }
-        
+
     }
 }

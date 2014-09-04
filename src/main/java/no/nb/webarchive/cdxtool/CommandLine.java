@@ -37,7 +37,7 @@ public class CommandLine {
             Config config = parseArguments(new ArrayList<String>(Arrays.asList(args)));
             CdxTool cdxTool = new CdxTool();
             cdxTool.setConfig(config);
-            cdxTool.execute();
+            cdxTool.execute(false);
         } catch (Exception e) {
             log.log(Level.SEVERE, e.getMessage(), e);
             usage();
@@ -105,7 +105,7 @@ public class CommandLine {
             usage();
         } else {
             while (!args.isEmpty()) {
-                config.addSourceDirectory(new SourceDirectory(new File(args.remove(0)), config.isRecursive()));
+                config.addSourceDirectory(new File(args.remove(0)));
             }
         }
 

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import no.nb.webarchive.cdxtool.cdx.IncrementalCDXMerger;
 import no.nb.webarchive.cdxtool.cdxjob.CdxGeneratorVisitor;
 
@@ -38,11 +37,15 @@ public class CdxTool {
     }
 
     public void setConfig(final Config config) throws InterruptedException, ExecutionException, IOException {
+        config.verify();
         this.config = config;
     }
 
-    @PostConstruct
     public void execute() {
+        execute(true);
+    }
+
+    public void execute(boolean returnImmediately) {
         if (config == null) {
             throw new IllegalStateException("No config was set");
         }
@@ -86,17 +89,7 @@ public class CdxTool {
 
         Scheduler scheduler = new Scheduler(sourceDirectories, fileVisitor);
         if (config.getScanIntervalSeconds() > 0) {
-            try {
-                try {
-                    scheduler.start(config.getScanIntervalSeconds(), TimeUnit.SECONDS);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                } catch (ExecutionException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } finally {
-                scheduler.stop();
-            }
+            scheduler.start(config.getScanIntervalSeconds(), TimeUnit.SECONDS, returnImmediately);
         } else {
             scheduler.runOnce();
         }

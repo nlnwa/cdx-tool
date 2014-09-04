@@ -44,12 +44,14 @@ public class ResourceIndexHelper {
     private final Set<String> uniqueFileNames;
 
     public ResourceIndexHelper(File resourceIndexFile) {
-        this.resourceIndexFile = resourceIndexFile;
+        this.resourceIndexFile = resourceIndexFile.getAbsoluteFile();
+        if (!resourceIndexFile.exists() && resourceIndexFile.getParentFile() != null) {
+            resourceIndexFile.getParentFile().mkdirs();
+        }
+
         db = new TreeMap<String, File>();
         uniqueFileNames = new HashSet<String>();
         readDB();
-        System.out.println("Resource index entry size: " + db.size());
-        System.out.println("Unique names: " + uniqueFileNames.size());
     }
 
     private void readDB() {

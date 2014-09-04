@@ -16,7 +16,6 @@
 package no.nb.webarchive.cdxtool;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.archive.wayback.resourceindex.cdx.CDXFormatIndex;
@@ -28,6 +27,8 @@ import org.archive.wayback.resourceindex.cdx.CDXFormatIndex;
 public class Config {
 
     private final List<SourceDirectory> sourceDirectories = new ArrayList<SourceDirectory>();
+
+    private String[] sourceFileSuffixes = new String[] {".arc", ".warc", ".arc.gz", ".warc.gz"};
 
     private boolean recursive = false;
 
@@ -79,6 +80,9 @@ public class Config {
 
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
+        for (SourceDirectory sourceDirectory : sourceDirectories) {
+            sourceDirectory.setRecursive(recursive);
+        }
     }
 
     public int getScanIntervalSeconds() {
@@ -89,14 +93,34 @@ public class Config {
         this.scanIntervalSeconds = scanIntervalSeconds;
     }
 
+    public String[] getSourceFileSuffixes() {
+        return sourceFileSuffixes;
+    }
+
+    public void setSourceFileSuffixes(String... sourceFileSuffixes) {
+        this.sourceFileSuffixes = sourceFileSuffixes;
+        for (SourceDirectory sourceDirectory : sourceDirectories) {
+            sourceDirectory.setFilenNameSuffixes(sourceFileSuffixes);
+        }
+    }
+
     public List<SourceDirectory> getSourceDirectories() {
         return sourceDirectories;
     }
 
-    public void addSourceDirectory(SourceDirectory sourceDirectory) {
+    public void addSourceDirectory(File directory) {
+        SourceDirectory sourceDirectory = new SourceDirectory(directory, recursive);
         sourceDirectory.setRecursive(recursive);
-        sourceDirectory.setFilenNameSuffixes(".arc", ".warc", ".arc.gz", ".warc.gz");
+        sourceDirectory.setFilenNameSuffixes(sourceFileSuffixes);
         this.sourceDirectories.add(sourceDirectory);
+    }
+
+    public void setSourceDirectories(List<File> directories) {
+        for (File dir : directories) {
+            SourceDirectory sourceDirectory = new SourceDirectory(dir, recursive);
+            sourceDirectory.setFilenNameSuffixes(sourceFileSuffixes);
+            this.sourceDirectories.add(sourceDirectory);
+        }
     }
 
     public boolean isShouldMerge() {
@@ -148,9 +172,9 @@ public class Config {
             throw new IllegalStateException("The output directory where cdx files for each of the arc/warc files are to be generated, must be set.");
         }
 
-        if ((newCanonClassic && newCanonSurt) ||
-                (newCanonClassic && cdxSpec != null) ||
-                (newCanonSurt && cdxSpec != null)) {
+        if ((newCanonClassic && newCanonSurt)
+                || (newCanonClassic && cdxSpec != null)
+                || (newCanonSurt && cdxSpec != null)) {
             throw new IllegalStateException("Only one of newCanonClassic, newCanonSurt or cdxSpec can be set");
         }
     }
