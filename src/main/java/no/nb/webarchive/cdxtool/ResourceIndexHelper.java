@@ -26,8 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -35,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class ResourceIndexHelper {
 
-    private static final Logger log = Logger.getLogger(ResourceIndexHelper.class.getName());
+    private static final Logger log = Logger.getLogger(ResourceIndexHelper.class);
 
     private final File resourceIndexFile;
 
@@ -71,10 +70,10 @@ public class ResourceIndexHelper {
                     line = in.readLine();
                 }
             } catch (IOException ex) {
-                log.log(Level.SEVERE, null, ex);
+                log.fatal(ex.getMessage(), ex);
             }
         } catch (FileNotFoundException ex) {
-            log.log(Level.WARNING, "Resource index file ''{0}'' not found", resourceIndexFile);
+            log.error("Resource index file '" + resourceIndexFile + "' not found");
         } finally {
             try {
                 if (in != null) {
@@ -90,11 +89,11 @@ public class ResourceIndexHelper {
         try {
             canonicalFile = file.getCanonicalFile();
             if (!uniqueFileNames.add(file.getName())) {
-                log.log(Level.FINE, "Filename: {0} already exist", file.getName());
+                log.debug("Filename: " + file.getName() + " already exist");
             }
             return db.put(canonicalFile.getName(), canonicalFile) == null ? canonicalFile : null;
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            log.fatal(ex.getMessage(), ex);
             return null;
         }
     }
@@ -115,7 +114,7 @@ public class ResourceIndexHelper {
                 out.newLine();
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            log.fatal(ex.getMessage(), ex);
         } finally {
             try {
                 if (out != null) {
@@ -130,7 +129,7 @@ public class ResourceIndexHelper {
         try {
             return db.containsValue(entity.getCanonicalFile());
         } catch (IOException ex) {
-            log.log(Level.SEVERE, null, ex);
+            log.fatal(ex.getMessage(), ex);
             return false;
         }
     }

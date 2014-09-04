@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class Merger {
 
-    private static final Logger log = Logger.getLogger(Merger.class.getName());
+    private static final Logger log = Logger.getLogger(Merger.class);
 
     private final List<LineReader> mergeReaders = new ArrayList<LineReader>();
 
@@ -40,11 +40,11 @@ public class Merger {
     }
 
     public Merger(File[] filesToMerge, PrintWriter output, boolean sortInput) throws IOException {
-        for (int i = 0; i < filesToMerge.length; i++) {
+        for (File file : filesToMerge) {
             if (sortInput) {
-                mergeReaders.add(new SortedLineReader(filesToMerge[i]));
+                mergeReaders.add(new SortedLineReader(file));
             } else {
-                mergeReaders.add(new LineReader(filesToMerge[i]));
+                mergeReaders.add(new LineReader(file));
             }
         }
         outWriter = output;

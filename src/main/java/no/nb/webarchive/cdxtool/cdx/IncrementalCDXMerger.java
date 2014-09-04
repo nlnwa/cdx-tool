@@ -21,14 +21,14 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author John Erik Halse
  */
 public class IncrementalCDXMerger {
-    private static final Logger log = Logger.getLogger(IncrementalCDXMerger.class.getName());
+    private static final Logger log = Logger.getLogger(IncrementalCDXMerger.class);
 
     private final int maxFilesPerRound;
 

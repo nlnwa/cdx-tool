@@ -18,7 +18,7 @@ package no.nb.webarchive.cdxtool;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import no.nb.webarchive.cdxtool.cdx.IncrementalCDXMerger;
 import no.nb.webarchive.cdxtool.cdxjob.CdxGeneratorVisitor;
 
@@ -29,7 +29,7 @@ import no.nb.webarchive.cdxtool.cdxjob.CdxGeneratorVisitor;
  */
 public class CdxTool {
 
-    private static final Logger log = Logger.getLogger(CdxTool.class.getName());
+    private static final Logger log = Logger.getLogger(CdxTool.class);
 
     private Config config;
 

@@ -26,11 +26,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import no.nb.webarchive.cdxtool.Config;
 import no.nb.webarchive.cdxtool.FileVisitor;
 import no.nb.webarchive.cdxtool.ResourceIndexHelper;
+import org.apache.log4j.Logger;
 import org.archive.wayback.core.CaptureSearchResult;
 import org.archive.wayback.resourceindex.cdx.CDXFormatIndex;
 import org.archive.wayback.resourceindex.cdx.SearchResultToCDXFormatAdapter;
@@ -49,7 +48,7 @@ import org.archive.wayback.util.url.KeyMakerUrlCanonicalizer;
  */
 public class CdxGeneratorVisitor implements FileVisitor {
 
-    private static final Logger log = Logger.getLogger(CdxGeneratorVisitor.class.getName());
+    private static final Logger log = Logger.getLogger(CdxGeneratorVisitor.class);
 
     private final Config config;
 
@@ -131,7 +130,7 @@ public class CdxGeneratorVisitor implements FileVisitor {
             try {
                 Collection<String> cdxData = generateCDX(sourceFile, cdxFile);
             } catch (IOException e) {
-                log.warning(e.getMessage());
+                log.error(e.getMessage(), e);
                 cdxFile.delete();
                 return;
             }
@@ -197,7 +196,7 @@ public class CdxGeneratorVisitor implements FileVisitor {
             }
             pw.close();
 
-            log.fine("Generated CDX for '" + input + "'");
+            log.debug("Generated CDX for '" + input + "'");
             return cdxData;
         } catch (CDXFormatException e) {
             throw new IOException(e.getMessage(), e);
@@ -221,12 +220,13 @@ public class CdxGeneratorVisitor implements FileVisitor {
             try {
                 ecs.take().get(5, TimeUnit.SECONDS);
             } catch (TimeoutException ex) {
-                log.fine("Waiting for " + ecs.getPendingJobCount() + " to finish.");
+                log.debug("Waiting for " + ecs.getPendingJobCount() + " to finish.");
                 i--;
             } catch (ExecutionException ex) {
-                Logger.getLogger(CdxGeneratorVisitor.class.getName()).log(Level.SEVERE, null, ex);
+                log.fatal(ex.getMessage(), ex);
+                throw new RuntimeException(ex);
             } catch (InterruptedException ex) {
-                Logger.getLogger(CdxGeneratorVisitor.class.getName()).log(Level.SEVERE, null, ex);
+                log.fatal(ex.getMessage(), ex);
                 throw new RuntimeException(ex);
             }
         }
