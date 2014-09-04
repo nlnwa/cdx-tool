@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class SortedLineReader extends LineReader {
 
-    private static final Logger log = Logger.getLogger(SortedLineReader.class.getName());
+    private static final Logger log = Logger.getLogger(SortedLineReader.class);
 
     private SortedSet<String> sortedLineSet;
 
@@ -53,7 +52,7 @@ public class SortedLineReader extends LineReader {
         try {
             in.close();
         } catch (IOException ex) {
-            log.log(Level.WARNING, ex.getMessage(), ex);
+            log.error(ex.getMessage(), ex);
         }
 
         readLine();

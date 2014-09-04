@@ -17,8 +17,7 @@ package no.nb.webarchive.cdxtool;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -26,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class SourceDirectory {
 
-    private static final Logger log = Logger.getLogger(SourceDirectory.class.getName());
+    private static final Logger log = Logger.getLogger(SourceDirectory.class);
 
     private final File directory;
 
@@ -108,7 +107,7 @@ public class SourceDirectory {
             }
 
             if (!pathname.canRead()) {
-                log.log(Level.WARNING, "Cannot read {0}", pathname.getAbsolutePath());
+                log.error("Cannot read " + pathname.getAbsolutePath());
                 accepted = false;
             }
 

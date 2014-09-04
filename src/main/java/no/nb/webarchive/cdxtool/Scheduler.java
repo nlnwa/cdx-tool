@@ -20,8 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -29,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class Scheduler {
 
-    private static final Logger log = Logger.getLogger(Scheduler.class.getName());
+    private static final Logger log = Logger.getLogger(Scheduler.class);
 
     private ScheduledExecutorService executorService;
 
@@ -78,7 +77,7 @@ public class Scheduler {
             try {
                 fileVisitor.postProcess();
             } catch (Exception ex) {
-                log.log(Level.SEVERE, null, ex);
+                log.fatal(ex.getMessage(), ex);
             }
             log.info("Finished job.");
             log.info(fileVisitor.toString());

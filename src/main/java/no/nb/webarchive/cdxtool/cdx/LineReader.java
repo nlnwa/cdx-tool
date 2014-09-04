@@ -19,8 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class LineReader {
 
-    private static final Logger log = Logger.getLogger(LineReader.class.getName());
+    private static final Logger log = Logger.getLogger(LineReader.class);
 
     final BufferedReader in;
 
@@ -57,7 +56,7 @@ public class LineReader {
                 try {
                     in.close();
                 } catch (Exception ex) {
-                    log.log(Level.WARNING, ex.getMessage(), ex);
+                    log.error(ex.getMessage(), ex);
                 }
             }
         }

@@ -20,8 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * Command line interface for CDX-tool.
@@ -30,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class CommandLine {
 
-    private static final Logger log = Logger.getLogger(CommandLine.class.getName());
+    private static final Logger log = Logger.getLogger(CommandLine.class);
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         try {
@@ -38,8 +37,8 @@ public class CommandLine {
             CdxTool cdxTool = new CdxTool();
             cdxTool.setConfig(config);
             cdxTool.execute(false);
-        } catch (Exception e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
+        } catch (Exception ex) {
+            log.fatal(ex.getMessage(), ex);
             usage();
         }
     }
@@ -96,7 +95,7 @@ public class CommandLine {
             config.verify();
         } catch (IllegalStateException e) {
             System.out.println("Error: " + e.getMessage());
-            log.log(Level.FINER, e.getMessage(), e);
+            log.trace(e.getMessage(), e);
             usage();
         }
 
